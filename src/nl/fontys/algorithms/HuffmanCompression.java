@@ -3,7 +3,6 @@ package nl.fontys.algorithms;
 import nl.fontys.utilities.Node;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.PriorityQueue;
 
 public class HuffmanCompression {
@@ -25,12 +24,7 @@ public class HuffmanCompression {
 
         nodePriorityQueue = getPrioritizedNodes(text);
         generateBitcodeForNode(generateTree(nodePriorityQueue), "");
-
-        for (Map.Entry<Character, String> entry : filledTreeHashMap.entrySet()) {
-            Character key = entry.getKey();
-            String value = entry.getValue();
-            System.out.println(key + " " + value);
-        }
+        System.out.println(getEncodedString(text));
     }
 
     /**
@@ -121,5 +115,22 @@ public class HuffmanCompression {
         if (node.getLeftNode() == null && node.getRightNode() == null) {
             filledTreeHashMap.put(node.getCharacter(), currentBitcode);
         }
+    }
+
+    /**
+     * This method will encode a given String by the use of the generated tree.
+     * @param text The text that should be encoded.
+     *             This parameter is not allowed to be null.
+     * @return Returns the encoded String. This value is a String.
+     */
+    private String getEncodedString(final String text) {
+        if (text == null) throw new IllegalArgumentException("The text is not allowed to be null.");
+
+        String encodedString = "";
+
+        for (final char character : text.toCharArray()) {
+            encodedString += filledTreeHashMap.get(character);
+        }
+        return encodedString;
     }
 }
