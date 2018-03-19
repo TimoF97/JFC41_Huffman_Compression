@@ -2,6 +2,7 @@ package nl.fontys.algorithms;
 
 import nl.fontys.utilities.Node;
 
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -24,7 +25,15 @@ public class HuffmanCompression {
 
         nodePriorityQueue = getPrioritizedNodes(text);
         generateBitcodeForNode(generateTree(nodePriorityQueue), "");
-        System.out.println(getEncodedString(text));
+        final BitSet encodedText = getBitsetFromEncodedString(getEncodedString(text));
+
+        StringBuilder s = new StringBuilder();
+        for( int i = 0; i < encodedText.length();  i++ )
+        {
+            s.append( encodedText.get( i ) == true ? 1: 0 );
+        }
+
+        System.out.println(s);
     }
 
     /**
@@ -132,5 +141,29 @@ public class HuffmanCompression {
             encodedString += filledTreeHashMap.get(character);
         }
         return encodedString;
+    }
+
+    /**
+     * This method will transform a given encodedString into an object of the BitSet class.
+     * @param encodedString The encodedString that should be transformed into a BitSet.
+     *                      This parameter is not allowed to be null.
+     * @return Returns an object of the BitSet class containing the bits of the given encodedString.
+     */
+    private BitSet getBitsetFromEncodedString(final String encodedString) {
+        if (encodedString == null) throw new IllegalArgumentException("The encodedString is not allowed to be null.");
+
+        final BitSet bitSet = new BitSet(encodedString.length());
+        int indexCounter = 0;
+
+        for (final Character character : encodedString.toCharArray()) {
+            /* A bit within the BitSet has a default value of 0.
+               To transform our encodedString to a BitSet we'll have to loop through all the 'characters', which are basically 0's and 1's within our String object.
+               Because the default value for a bit within a BitSet is 0 we should only make sure to turn the value of a bit to 1 whenever the 'character' within our encodedString equals "1". */
+            if (character.equals("1")) {
+                bitSet.set(indexCounter);
+            }
+            indexCounter++;
+        }
+        return bitSet;
     }
 }
