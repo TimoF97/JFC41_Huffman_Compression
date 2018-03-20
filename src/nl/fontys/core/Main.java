@@ -39,6 +39,6 @@ public class Main {
     }
 
     private static void decode() {
-        huffmanCompression.decode();
+        LOGGER.info(huffmanCompression.decode());
     }
 }

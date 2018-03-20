@@ -24,21 +24,23 @@ public class HuffmanCompression {
      * This method will encode the given text by the use of the HuffmanCompression.
      *
      * @param text The text that should be encoded.
-     *             This parameter is not allowed to be null.
+     *             This parameter is not allowed to be null nor an empty String.
      */
-    public void encode(final String text) {
-        if (text == null) throw new IllegalArgumentException("The text is not allowed to be null.");
+    public HashMap<Character, String> encode(final String text) {
+        if (text == null || text.isEmpty()) throw new IllegalArgumentException("The text is not allowed to be null nor an empty String.");
 
         generateBitCodeForNode(generateTree(getPrioritizedNodes(text)), "");
         saveBitSetAndTree(filledTreeHashMap, getBitsetFromEncodedString(getEncodedString(text)), Constants.ENCODED_TEXT_FILE_PATH);
+        return filledTreeHashMap;
     }
 
     /**
      * This method will decode the text that will be read from the file that can be found in Constants.ENCODED_TEXT_FILE_PATH.
+     * @return
      */
-    public void decode() {
+    public String decode() {
         final BitSet bitSet = readBitSetAndTree(Constants.ENCODED_TEXT_FILE_PATH);
-        LOGGER.log(Level.INFO, getDecodedString(bitSet, getReversedFilledTreeHashMap(filledTreeHashMap)));
+        return getDecodedString(bitSet, getReversedFilledTreeHashMap(filledTreeHashMap));
     }
 
     /**
@@ -166,7 +168,7 @@ public class HuffmanCompression {
         final StringBuilder decodedString = new StringBuilder();
         StringBuilder currentBitcode = new StringBuilder();
 
-        for (int i = 0; i < bitSet.length(); i++) {
+        for (int i = 0; i < (bitSet.length() -1); i++) {
             currentBitcode.append(bitSet.get(i) ? "1" : "0");
 
             final Character character = tree.get(currentBitcode.toString());
@@ -202,6 +204,7 @@ public class HuffmanCompression {
             }
             indexCounter++;
         }
+        bitSet.set(indexCounter);
         return bitSet;
     }
 
