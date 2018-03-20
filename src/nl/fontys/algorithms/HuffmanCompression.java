@@ -144,12 +144,12 @@ public class HuffmanCompression {
     private String getEncodedString(final String text) {
         if (text == null) throw new IllegalArgumentException("The text is not allowed to be null.");
 
-        String encodedString = "";
+        final StringBuilder encodedString = new StringBuilder();
 
         for (final char character : text.toCharArray()) {
-            encodedString += filledTreeHashMap.get(character);
+            encodedString.append(filledTreeHashMap.get(character));
         }
-        return encodedString;
+        return encodedString.toString();
     }
 
     /**
@@ -163,12 +163,21 @@ public class HuffmanCompression {
         if (bitSet == null) throw new IllegalArgumentException("The bitSet is not allowed to be null.");
         else if (tree == null) throw new IllegalArgumentException("The tree is not allowed to be null.");
 
-        String decodedString = "";
+        final StringBuilder decodedString = new StringBuilder();
+        StringBuilder currentBitcode = new StringBuilder();
 
         for (int i = 0; i < bitSet.length(); i++) {
-            ;
+            currentBitcode.append(bitSet.get(i) ? "1" : "0");
+
+            final Character character = tree.get(currentBitcode.toString());
+
+            /* There's a character that matches this current bitcode. Let's add it to our current decodedString. */
+            if (character != null) {
+                decodedString.append(character);
+                currentBitcode = new StringBuilder();
+            }
         }
-        return decodedString;
+        return decodedString.toString();
     }
 
     /**
