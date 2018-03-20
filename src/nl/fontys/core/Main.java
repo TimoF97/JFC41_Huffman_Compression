@@ -3,10 +3,13 @@ package nl.fontys.core;
 import nl.fontys.algorithms.HuffmanCompression;
 
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
 
     private static HuffmanCompression huffmanCompression;
+    private static final Logger LOGGER = Logger.getLogger(HuffmanCompression.class.getName());
 
     public static void main(String[] args) {
         huffmanCompression = new HuffmanCompression();
@@ -16,18 +19,18 @@ public class Main {
     private static void decideActionToPerform() {
         final Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Which action would you like to perform?");
-        System.out.println("[1] Encode text");
-        System.out.println("[2] Decode text");
+        LOGGER.log(Level.INFO, "Which action would you like to perform?");
+        LOGGER.log(Level.INFO, "[1] Encode text");
+        LOGGER.log(Level.INFO, "[2] Decode text");
         final int inputChoice = Integer.parseInt(scanner.nextLine().trim());
 
-        switch (inputChoice) {
-            case 1:
-                System.out.println("Write the text you want to encode.");
-                encode(scanner.nextLine());
-                break;
-            case 2:
-                decode();
+        if (inputChoice == 1) {
+            LOGGER.log(Level.INFO, "Write the text you want to encode.");
+            encode(scanner.nextLine());
+
+        }
+        else if (inputChoice == 2) {
+            decode();
         }
     }
 

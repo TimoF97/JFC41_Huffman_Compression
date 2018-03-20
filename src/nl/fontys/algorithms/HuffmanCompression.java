@@ -7,12 +7,14 @@ import java.io.*;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.PriorityQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HuffmanCompression {
 
-    private PriorityQueue<Node> nodePriorityQueue;
     private HashMap<Character, String> filledTreeHashMap;
-    private HashMap<String, Character> reversedFilledTreeHashMap;
+
+    private static final Logger LOGGER = Logger.getLogger(HuffmanCompression.class.getName());
 
     public HuffmanCompression() {
         filledTreeHashMap = new HashMap<>();
@@ -27,8 +29,7 @@ public class HuffmanCompression {
     public void encode(final String text) {
         if (text == null) throw new IllegalArgumentException("The text is not allowed to be null.");
 
-        nodePriorityQueue = getPrioritizedNodes(text);
-        generateBitCodeForNode(generateTree(nodePriorityQueue), "");
+        generateBitCodeForNode(generateTree(getPrioritizedNodes(text)), "");
         saveBitSetAndTree(filledTreeHashMap, getBitsetFromEncodedString(getEncodedString(text)), Constants.ENCODED_TEXT_FILE_PATH);
     }
 
@@ -37,8 +38,7 @@ public class HuffmanCompression {
      */
     public void decode() {
         final BitSet bitSet = readBitSetAndTree(Constants.ENCODED_TEXT_FILE_PATH);
-        final String decodedString = getDecodedString(bitSet, getReversedFilledTreeHashMap(filledTreeHashMap));
-        System.out.println(decodedString);
+        LOGGER.log(Level.INFO, getDecodedString(bitSet, getReversedFilledTreeHashMap(filledTreeHashMap)));
     }
 
     /**
@@ -129,7 +129,7 @@ public class HuffmanCompression {
            Being at the end of the branch, means that our current generated currentBitcode is the bitcode for our current node within the tree.
            We should therefore add the character that this node represents to our filledTreeHashMap with it's according generated bitcode. */
         if (node.getLeftNode() == null && node.getRightNode() == null) {
-            System.out.println(node.getCharacter() + " | " + currentBitcode);
+            LOGGER.log(Level.INFO, node.getCharacter() + " | " + currentBitcode);
             filledTreeHashMap.put(node.getCharacter(), currentBitcode);
         }
     }
@@ -224,7 +224,7 @@ public class HuffmanCompression {
             objectOutputStream.writeObject(tree);
             objectOutputStream.writeObject(bitSet);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage());
         }
     }
 
@@ -243,10 +243,8 @@ public class HuffmanCompression {
         try (final ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(Constants.ENCODED_TEXT_FILE_PATH))) {
             filledTreeHashMap = (HashMap<Character, String>) objectInputStream.readObject();
             return (BitSet) objectInputStream.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
         }
         return null;
     }
