@@ -16,12 +16,12 @@ public class HuffmanCompressionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void encode_Null_Test() throws Exception {
-        final HashMap<Character, String> hashMap = huffmanCompression.encode(null);
+        huffmanCompression.encode(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void encode_Empty_Text_Test() throws Exception {
-        final HashMap<Character, String> hashMap = huffmanCompression.encode("");
+        huffmanCompression.encode("");
     }
 
     @Test

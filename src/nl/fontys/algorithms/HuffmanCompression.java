@@ -131,7 +131,7 @@ public class HuffmanCompression {
            Being at the end of the branch, means that our current generated currentBitcode is the bitcode for our current node within the tree.
            We should therefore add the character that this node represents to our filledTreeHashMap with it's according generated bitcode. */
         if (node.getLeftNode() == null && node.getRightNode() == null) {
-            LOGGER.log(Level.INFO, node.getCharacter() + " | " + currentBitcode);
+            //LOGGER.log(Level.INFO, node.getCharacter() + " | " + currentBitcode);
             filledTreeHashMap.put(node.getCharacter(), currentBitcode);
         }
     }
