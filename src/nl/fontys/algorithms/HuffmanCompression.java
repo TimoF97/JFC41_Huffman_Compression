@@ -24,16 +24,8 @@ public class HuffmanCompression {
         if (text == null) throw new IllegalArgumentException("The text is not allowed to be null.");
 
         nodePriorityQueue = getPrioritizedNodes(text);
-        generateBitcodeForNode(generateTree(nodePriorityQueue), "");
+        generateBitCodeForNode(generateTree(nodePriorityQueue), "");
         final BitSet encodedText = getBitsetFromEncodedString(getEncodedString(text));
-
-        StringBuilder s = new StringBuilder();
-        for( int i = 0; i < encodedText.length();  i++ )
-        {
-            s.append( encodedText.get( i ) == true ? 1: 0 );
-        }
-
-        System.out.println(s);
     }
 
     /**
@@ -96,7 +88,7 @@ public class HuffmanCompression {
      *                       This parameter is not allowed to be null.
      *                       This parameter is indeed allowed to be an empty String as there won't be a currentBitcode when starting the entire generation process.
      */
-    private void generateBitcodeForNode(final Node node, final String currentBitcode) {
+    private void generateBitCodeForNode(final Node node, final String currentBitcode) {
         if (node == null) throw new IllegalArgumentException("The node is not allowed to be null.");
         else if (currentBitcode == null) throw new IllegalArgumentException("The currentBitcode is not allowed to be null. If there is no currentBitcode available, use an empty String as parameter.");
 
@@ -107,7 +99,7 @@ public class HuffmanCompression {
 
                We've chosen that going to the right in the 'tree' will value a 1 whereas going to the left will value a 0.
                We're going to the right in the tree so we're extending the currentBitcode by adding a '1' to it. */
-            generateBitcodeForNode(node.getRightNode(), currentBitcode + "1");
+            generateBitCodeForNode(node.getRightNode(), currentBitcode + "1");
         }
         /* The current node has a left node as well. Let's generate the bitcode for it's left node. */
         if (node.getLeftNode() != null) {
@@ -116,12 +108,13 @@ public class HuffmanCompression {
 
                We've chosen that going to the right in the 'tree' will value a 1 whereas going to the left will value a 0.
                We're going to the left in the tree so we're extending the currentBitcode by adding a '0' to it. */
-            generateBitcodeForNode(node.getLeftNode(), currentBitcode + "0");
+            generateBitCodeForNode(node.getLeftNode(), currentBitcode + "0");
         }
         /* The current node has no left nor right nodes. This means that we're at the end of this branch.
            Being at the end of the branch, means that our current generated currentBitcode is the bitcode for our current node within the tree.
            We should therefore add the character that this node represents to our filledTreeHashMap with it's according generated bitcode. */
         if (node.getLeftNode() == null && node.getRightNode() == null) {
+            System.out.println(node.getCharacter() + " | " + currentBitcode);
             filledTreeHashMap.put(node.getCharacter(), currentBitcode);
         }
     }
@@ -159,7 +152,7 @@ public class HuffmanCompression {
             /* A bit within the BitSet has a default value of 0.
                To transform our encodedString to a BitSet we'll have to loop through all the 'characters', which are basically 0's and 1's within our String object.
                Because the default value for a bit within a BitSet is 0 we should only make sure to turn the value of a bit to 1 whenever the 'character' within our encodedString equals "1". */
-            if (character.equals("1")) {
+            if (character.equals('1')) {
                 bitSet.set(indexCounter);
             }
             indexCounter++;

@@ -35,6 +35,6 @@ public class Node implements Comparable<Node> {
 
     @Override
     public int compareTo(Node o) {
-        return this.frequency > o.getFrequency() ? 1 : -1;
+        return this.frequency < o.getFrequency() ? 1 : -1;
     }
 }
