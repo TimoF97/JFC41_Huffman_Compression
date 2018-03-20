@@ -18,6 +18,7 @@ public class Main {
 
         System.out.println("Which action would you like to perform?");
         System.out.println("[1] Encode text");
+        System.out.println("[2] Decode text");
         final int inputChoice = Integer.parseInt(scanner.nextLine().trim());
 
         switch (inputChoice) {
@@ -25,10 +26,16 @@ public class Main {
                 System.out.println("Write the text you want to encode.");
                 encode(scanner.nextLine());
                 break;
+            case 2:
+                decode();
         }
     }
 
     private static void encode(final String text) {
         huffmanCompression.encode(text);
+    }
+
+    private static void decode() {
+        huffmanCompression.decode();
     }
 }

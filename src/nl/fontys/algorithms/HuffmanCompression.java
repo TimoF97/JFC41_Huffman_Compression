@@ -3,9 +3,7 @@ package nl.fontys.algorithms;
 import nl.fontys.utilities.Constants;
 import nl.fontys.utilities.Node;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.PriorityQueue;
@@ -14,6 +12,7 @@ public class HuffmanCompression {
 
     private PriorityQueue<Node> nodePriorityQueue;
     private HashMap<Character, String> filledTreeHashMap;
+    private HashMap<String, Character> reversedFilledTreeHashMap;
 
     public HuffmanCompression() {
         filledTreeHashMap = new HashMap<>();
@@ -31,6 +30,15 @@ public class HuffmanCompression {
         nodePriorityQueue = getPrioritizedNodes(text);
         generateBitCodeForNode(generateTree(nodePriorityQueue), "");
         saveBitSetAndTree(filledTreeHashMap, getBitsetFromEncodedString(getEncodedString(text)), Constants.ENCODED_TEXT_FILE_PATH);
+    }
+
+    /**
+     * This method will decode the text that will be read from the file that can be found in Constants.ENCODED_TEXT_FILE_PATH.
+     */
+    public void decode() {
+        final BitSet bitSet = readBitSetAndTree(Constants.ENCODED_TEXT_FILE_PATH);
+        final String decodedString = getDecodedString(bitSet, getReversedFilledTreeHashMap(filledTreeHashMap));
+        System.out.println(decodedString);
     }
 
     /**
@@ -97,8 +105,7 @@ public class HuffmanCompression {
      */
     private void generateBitCodeForNode(final Node node, final String currentBitcode) {
         if (node == null) throw new IllegalArgumentException("The node is not allowed to be null.");
-        else if (currentBitcode == null)
-            throw new IllegalArgumentException("The currentBitcode is not allowed to be null. If there is no currentBitcode available, use an empty String as parameter.");
+        else if (currentBitcode == null) throw new IllegalArgumentException("The currentBitcode is not allowed to be null. If there is no currentBitcode available, use an empty String as parameter.");
 
         /* The current node has a right node as well. Let's generate the bitcode for it's right node. */
         if (node.getRightNode() != null) {
@@ -143,6 +150,25 @@ public class HuffmanCompression {
             encodedString += filledTreeHashMap.get(character);
         }
         return encodedString;
+    }
+
+    /**
+     * This method will decode a given encoded bitSet by the use of the reversed generated tree.
+     * @param bitSet The BitSet that should be decoded.
+     *               This parameter is not allowed to be null.
+     * @param tree   The tree that should be used for decoding.
+     * @return Returns a String which is a representation of the decoded BitSet values.
+     */
+    private String getDecodedString(final BitSet bitSet, final HashMap<String, Character> tree) {
+        if (bitSet == null) throw new IllegalArgumentException("The bitSet is not allowed to be null.");
+        else if (tree == null) throw new IllegalArgumentException("The tree is not allowed to be null.");
+
+        String decodedString = "";
+
+        for (int i = 0; i < bitSet.length(); i++) {
+            ;
+        }
+        return decodedString;
     }
 
     /**
@@ -191,5 +217,44 @@ public class HuffmanCompression {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * This method will read a file for the given filepath and it will read it's containing tree.
+     * The filledTreeHashMap property will be assigned with the tree from this given file.
+     * This method will return the BitSet which represents the encoded text within the given file.
+     *
+     * @param filepath The filepath of the file that should be read.
+     *                 This path is not allowed to be null nor an empty String.
+     * @return Returns an object of the BitSet class. This object is a representation of an encoded string that should be decoded.
+     */
+    private BitSet readBitSetAndTree(final String filepath) {
+        if (filepath == null || filepath.isEmpty()) throw new IllegalArgumentException("The filepath is now allowed to be null nor an empty String.");
+
+        try (final ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(Constants.ENCODED_TEXT_FILE_PATH))) {
+            filledTreeHashMap = (HashMap<Character, String>) objectInputStream.readObject();
+            return (BitSet) objectInputStream.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * This method will generate and return a reversed version of the given HashMap<Character, String>, meaning that it'll return a HashMap<String, Character>.
+     * It will switch the keys and values. This is needed to make sure the decoded can do it's job with the reversed tree.
+     * @param filledTreeHashMap The three that should be reversed.
+     *                          This parameter is not allowed to be null.
+     * @return A reversed version of the given HashMap. It's keys and values are swapped.
+     */
+    private HashMap<String, Character> getReversedFilledTreeHashMap(final HashMap<Character, String> filledTreeHashMap) {
+        if (filledTreeHashMap == null) throw new IllegalArgumentException("The filledThreeHashMap is not allowed to be null.");
+
+        final HashMap<String, Character> reversedMap = new HashMap<>();
+        filledTreeHashMap.forEach((k, v) -> reversedMap.put(v, k));
+
+        return reversedMap;
     }
 }
